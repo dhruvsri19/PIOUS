@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import heroImg from './assets/hero-plant.jpg'
+import heroBackgroundImg from './assets/hero-mineral-processing.png'
 import processImg from './assets/solutions-process.jpg'
 import aerialImg from './assets/plant-aerial.jpg'
 import flotationImg from './assets/flotation-cells.jpg'
 import controlImg from './assets/control-room.jpg'
 import conveyorImg from './assets/conveyor-screening.jpg'
+import cmPurohitImg from './assets/cm-purohit.png'
+import sudhirSrivastavaImg from './assets/sudhir-srivastava.png'
+import pankajSrivastavaImg from './assets/pankaj-srivastava.png'
 import './App.css'
 
 /* ─── Scroll reveal hook ─── */
@@ -93,7 +97,7 @@ function Hero() {
   return (
     <section className="hero" id="hero">
       <div className="hero__bg">
-        <img src={heroImg} alt="Mineral processing plant operations" loading="eager" />
+        <img src={heroBackgroundImg} alt="Mineral processing plant operations" loading="eager" />
         <div className="hero__overlay" />
       </div>
       <div className="hero__content container">
@@ -200,6 +204,11 @@ const solutionsData = [
   },
 ]
 
+const initialContactFormData = {
+  name: '', company: '', email: '', phone: '',
+  advisoryLine: '', message: '', website: '',
+}
+
 function Solutions() {
   const [active, setActive] = useState(null)
 
@@ -275,9 +284,6 @@ function Products() {
                 <div className="products__card-content">
                   <h4>{p.title}</h4>
                   <p>{p.desc}</p>
-                  <button className="btn btn--text">
-                    Learn more <Arrow />
-                  </button>
                 </div>
               </div>
             </Reveal>
@@ -318,9 +324,6 @@ function Industries() {
                   <div className="industries__card-overlay" />
                 </div>
                 <h5>{ind.name}</h5>
-                <button className="btn btn--text">
-                  Explore <Arrow />
-                </button>
               </div>
             </Reveal>
           ))}
@@ -547,9 +550,9 @@ function Partners() {
    ───────────────────────────────────────────── */
 function Leadership() {
   const leaders = [
-    { name: 'C. M. Purohit', role: 'Director', initials: 'CP' },
-    { name: 'Sudhir Srivastava', role: 'Director', initials: 'SS' },
-    { name: 'Pankaj Srivastava', role: 'Director', initials: 'PS' },
+    { name: 'C. M. Purohit', role: 'Director', photo: cmPurohitImg },
+    { name: 'Sudhir Srivastava', role: 'Managing Director', photo: sudhirSrivastavaImg },
+    { name: 'Pankaj Srivastava', role: 'Director', photo: pankajSrivastavaImg },
   ]
   return (
     <section className="leadership section" id="leadership">
@@ -566,11 +569,10 @@ function Leadership() {
             <Reveal key={i} delay={i + 1}>
               <div className="leadership__card">
                 <div className="leadership__avatar">
-                  <span>{l.initials}</span>
+                  <img src={l.photo} alt={`${l.name} portrait`} loading="lazy" />
                 </div>
                 <h4>{l.name}</h4>
                 <p className="leadership__role">{l.role}</p>
-                <button className="btn btn--text">View profile <Arrow /></button>
               </div>
             </Reveal>
           ))}
@@ -608,7 +610,7 @@ function Insights() {
               <div className="insights__featured-content">
                 <span className="label">{articles[0].category}</span>
                 <h3>{articles[0].title}</h3>
-                <button className="btn btn--text">Read article <Arrow /></button>
+
               </div>
             </div>
           </Reveal>
@@ -622,7 +624,7 @@ function Insights() {
                   <div className="insights__item-content">
                     <span className="label">{a.category}</span>
                     <h5>{a.title}</h5>
-                    <button className="btn btn--text">Read <Arrow /></button>
+
                   </div>
                 </div>
               </Reveal>
@@ -668,7 +670,7 @@ function CaseStudies() {
                 <p>Measurable improvements in plant performance and business value.</p>
               </div>
             </div>
-            <p className="case-studies__note">Case studies with verified results will be published here.</p>
+
           </div>
         </Reveal>
       </div>
@@ -680,18 +682,42 @@ function CaseStudies() {
    CONTACT / GET IN TOUCH
    ───────────────────────────────────────────── */
 function Contact() {
-  const [formData, setFormData] = useState({
-    name: '', company: '', email: '', phone: '',
-    advisoryLine: '', message: ''
-  })
+  const [formData, setFormData] = useState(initialContactFormData)
+  const [submissionState, setSubmissionState] = useState('idle')
+  const formRef = useRef(null)
 
   const handleChange = (e) => {
+    setSubmissionState('idle')
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const submitInquiry = async () => {
+    if (submissionState === 'loading') return
+
+    setSubmissionState('loading')
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) throw new Error('Inquiry delivery failed')
+
+      setFormData(initialContactFormData)
+      setSubmissionState('success')
+    } catch {
+      setSubmissionState('error')
+    }
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert('Thank you for your inquiry. A PIOUS director will respond within one business day.')
+    submitInquiry()
+  }
+
+  const handleRetry = () => {
+    if (formRef.current?.reportValidity()) submitInquiry()
   }
 
   return (
@@ -713,7 +739,11 @@ function Contact() {
                   </div>
                   <div>
                     <span className="label">Email</span>
-                    <a href="mailto:info@pioustechnology.com" className="contact__link">info@pioustechnology.com</a>
+                    <div className="contact__links">
+                      <a href="mailto:cm.purohit@piousts.com" className="contact__link">cm.purohit@piousts.com</a>
+                      <a href="mailto:Pankaj.Srivastava@piousts.com" className="contact__link">Pankaj.Srivastava@piousts.com</a>
+                      <a href="mailto:sudhir.srivastava@piousts.com" className="contact__link">sudhir.srivastava@piousts.com</a>
+                    </div>
                   </div>
                 </div>
 
@@ -725,7 +755,10 @@ function Contact() {
                   </div>
                   <div>
                     <span className="label">Phone</span>
-                    <a href="tel:+91124456789" className="contact__link">+91 124 456 7890</a>
+                    <div className="contact__links">
+                      <a href="tel:+919811043106" className="contact__link">+91 98110 43106</a>
+                      <a href="tel:+919811637188" className="contact__link">+91 9811637188</a>
+                    </div>
                   </div>
                 </div>
 
@@ -737,11 +770,10 @@ function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <span className="label">Office</span>
+                    <span className="label">Registered Office</span>
                     <p className="contact__address">
-                      PIOUS Technology &amp; Sales Pvt. Ltd.<br />
-                      Gurugram, Haryana 122001<br />
-                      India
+                      HOUSE NO-3E/64, Ridgewood Estate Galleria, DLF-IV,<br />
+                      Gurgaon – 122009, Haryana
                     </p>
                   </div>
                 </div>
@@ -751,7 +783,7 @@ function Contact() {
                 <span className="label">Directors</span>
                 <div className="contact__directors-list">
                   <p><strong>C M Purohit</strong> — Director</p>
-                  <p><strong>Sudhir Srivastava</strong> — Director</p>
+                  <p><strong>Sudhir Srivastava</strong> — Managing Director</p>
                   <p><strong>Pankaj Srivastava</strong> — Director</p>
                 </div>
               </div>
@@ -762,7 +794,7 @@ function Contact() {
               <h3>Submit an Advisory Inquiry</h3>
               <p className="contact__form-desc">Provide details regarding your operational facility or business requirements. An operating director will respond within one business day.</p>
 
-              <form onSubmit={handleSubmit} className="contact__form">
+              <form ref={formRef} onSubmit={handleSubmit} className="contact__form">
                 <div className="contact__form-row">
                   <div className="contact__field">
                     <label htmlFor="contact-name">Full Name *</label>
@@ -805,9 +837,29 @@ function Contact() {
                   <textarea id="contact-message" name="message" rows="5" placeholder="Tell us briefly about your business and what you'd like to discuss..." value={formData.message} onChange={handleChange} required />
                 </div>
 
-                <button type="submit" className="btn btn--primary btn--rounded contact__submit">
-                  Submit Inquiry <Arrow />
+                <div className="contact__honeypot" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input id="contact-website" name="website" type="text" tabIndex="-1" autoComplete="off" value={formData.website} onChange={handleChange} />
+                </div>
+
+                <button type="submit" className="btn btn--primary btn--rounded contact__submit" disabled={submissionState === 'loading'}>
+                  {submissionState === 'loading' ? 'Sending Inquiry…' : <>Submit Inquiry <Arrow /></>}
                 </button>
+
+                {submissionState === 'success' && (
+                  <p className="contact__form-status contact__form-status--success" role="status">
+                    Thank you. Your inquiry has been received and a PIOUS representative will respond shortly.
+                  </p>
+                )}
+
+                {submissionState === 'error' && (
+                  <div className="contact__form-status contact__form-status--error" role="alert">
+                    <p>We couldn’t send your inquiry just now. Please try again.</p>
+                    <button type="button" className="btn btn--text contact__retry" onClick={handleRetry} disabled={submissionState === 'loading'}>
+                      Try again <Arrow />
+                    </button>
+                  </div>
+                )}
               </form>
             </div>
           </div>
