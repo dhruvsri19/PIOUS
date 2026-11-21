@@ -772,8 +772,8 @@ function Contact() {
                   <div>
                     <span className="label">Registered Office</span>
                     <p className="contact__address">
-                      HOUSE NO-3E/64, Ridgewood Estate Galleria, DLF-IV,<br />
-                      Gurgaon – 122009, Haryana
+                      N 243, New Town Heights, Sector 90,<br />
+                      Gurgaon – 122505, Haryana
                     </p>
                   </div>
                 </div>
