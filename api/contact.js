@@ -1,4 +1,4 @@
-const RECIPIENTS = ['Pankaj.Srivastava@piousts.com', 'sudhir.srivastava@piousts.com']
+const RECIPIENTS = ['Pankaj.Srivastava@piousts.com', 'cm.purohit@piousts.com']
 
 function escapeHtml(value) {
   return String(value)
