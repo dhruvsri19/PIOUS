@@ -210,8 +210,6 @@ const initialContactFormData = {
 }
 
 function Solutions() {
-  const [active, setActive] = useState(null)
-
   return (
     <section className="solutions section" id="solutions">
       <div className="container">
@@ -224,11 +222,7 @@ function Solutions() {
         <div className="solutions__grid">
           {solutionsData.map((s, i) => (
             <Reveal key={i} delay={i + 1}>
-              <div
-                className={`solutions__card ${active === i ? 'solutions__card--active' : ''}`}
-                onMouseEnter={() => setActive(i)}
-                onMouseLeave={() => setActive(null)}
-              >
+              <div className="solutions__card">
                 <div className="solutions__card-header">
                   <span className="solutions__num">{s.num}</span>
                   <h4 className="solutions__title">{s.title}</h4>
@@ -237,9 +231,6 @@ function Solutions() {
                   <ul className="solutions__items">
                     {s.items.map((item, j) => <li key={j}>{item}</li>)}
                   </ul>
-                  <button className="btn btn--text">
-                    Explore solution <Arrow />
-                  </button>
                 </div>
                 <div className="solutions__card-img">
                   <img src={s.img} alt={s.title} loading="lazy" />
